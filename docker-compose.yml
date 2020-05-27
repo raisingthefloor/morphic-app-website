@@ -8,4 +8,8 @@ services:
     environment:
       SERVICE_URL:    "http://localhost:5002/"
       RECAPTCHA_KEY:  "6Le6hfsUAAAAAB9-WagMKxjnZmP7RKrSxlTYjJc-"
+    volumes:
+    - type: bind
+      source: ./www
+      target: /MorphicLiteWeb/www
 

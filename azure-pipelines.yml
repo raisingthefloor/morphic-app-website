@@ -1,0 +1,101 @@
+# .NET Desktop
+# Build and run tests for .NET Desktop or Windows classic desktop solutions.
+# Add steps that publish symbols, save build artifacts, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/apps/windows/dot-net
+
+trigger:
+  branches:
+    include:
+      - master
+      - develop
+  tags:
+    include:
+      - "v*"
+
+pool:
+  vmImage: 'ubuntu-18.04'
+
+variables:
+  imageName: 'morphicweb'
+  ${{ if eq(variables['Build.SourceBranchName'], 'master') }}:
+    newDeployTag: stable-$(Build.BuildNumber)
+    deployRepoRef: master
+    imageTags: |
+      stable
+      stable-$(Build.BuildNumber)
+  ${{ if eq(variables['Build.SourceBranchName'], 'develop') }}:
+    newDeployTag: develop-$(Build.BuildNumber)
+    deployRepoRef: develop
+    imageTags: |
+      latest
+      develop-$(Build.BuildNumber)
+  ${{ if startsWith(variables['Build.SourceBranch'], 'refs/tags') }}:
+    imageTags: |
+      $(Build.SourceBranchName)
+
+resources:
+  repositories:
+    - repository: deploy-morphicweb
+      type: github
+      endpoint: oregondesignservices
+      name: oregondesignservices/deploy-morphicweb
+      ref: $(deployRepoRef)
+
+
+stages:
+  - stage: docker
+    jobs:
+      - job: build_and_publish_image
+        steps:
+          - task: Docker@2
+            displayName: build image
+            inputs:
+              repository: morphicworld/morphicweb
+              command: build
+              Dockerfile: Dockerfile
+              tags: $(imageTags)
+          - task: Docker@2
+            displayName: Login to docker hub
+            condition: ne(variables['imageTags'], '')
+            inputs:
+              command: login
+              containerRegistry: morphicworld dockerhub
+          - task: Docker@2
+            displayName: build and push image
+            condition: ne(variables['imageTags'], '')
+            inputs:
+              repository: morphicworld/morphicweb
+              command: push
+              Dockerfile: Dockerfile
+              tags: $(imageTags)
+
+  - stage: update_deploy_tag
+    jobs:
+      - job: update_deploy_tag
+        condition: ne(variables['newDeployTag'], '')
+        steps:
+          - checkout: deploy-morphicweb
+            persistCredentials: true
+            path: deploy-morphicweb
+          - task: Bash@3
+            env:
+              NEWTAG: $(newDeployTag)
+              BRANCH: $(deployRepoRef)
+            inputs:
+              targetType: 'inline'
+              workingDirectory: resources/
+              script: |
+                set -e
+                set -x
+                echo "installing kustomize"
+                wget "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh" -O install_kustomize.sh
+                bash install_kustomize.sh
+                git checkout ${BRANCH}
+                ls -al
+                echo "setting new image tag"
+                ./kustomize edit set image morphicworld/morphiclite=morphicworld/morphiclite:${NEWTAG}
+                cat kustomization.yaml
+                git config --global user.email "buildmaster@raisingthefloor.org"
+                git config --global user.name "buildmaster"
+                git commit kustomization.yaml -m "buildmaster: updating tag to ${NEWTAG}"
+                git push
