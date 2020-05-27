@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>Reset Your Password | Morphic</title>
+  <link rel="shortcut icon" href="../style/favicon.ico" type="image/vnd.microsoft.icon">
+  <link rel="stylesheet" type="text/css" href="../style/default.css">
+  <link rel="stylesheet" type="text/css" href="password.css">
+</head>
+<body>
+  <header>
+    <img class="logo" src="../logo.svg" alt="An animated Mophic logo (gear-shaped icon that has a chameleon in the center) changes colors and then winks.">
+  </header>
+  <main>
+    <header>
+      <h1>Reset Your Password</h1>
+    </header>
+    <div class="step" id="requestStep" style="display: none">
+      <p>To reset your password, please enter the email address you used when signing up for Morphic</p>
+      <div class="form">
+        <label>
+          <span>Your Email Address</span>
+          <input type="email" id="emailField" placeholder="e.g., yourname@gmail.com">
+        </label>
+        <button id="requestButton" disabled>Request Password Reset</button>
+      </div>
+      <p class="help">If you have any questions, please <a href="mailto:support@morphic.org">contact us</a></p>
+    </div>
+    <div class="step" id="waitStep" style="display: none">
+      <p>Thanks! Check your email for a link from Morphic.</p>
+      <p class="help">If you don't receive an email, <button id="restartButton">try again</button></p>
+    </div>
+    <div class="step" id="passwordStep" style="display: none">
+      <p>Choose a new password</p>
+      <div class="form">
+        <label>
+          <span>New Password</span>
+          <input type="password" id="newPasswordField" placeholder=" " minlength="6">
+        </label>
+        <label>
+          <span>Confirm Password</span>
+          <input type="password" id="confirmPasswordField" placeholder=" ">
+        </label>
+        <button id="setPasswordButton" disabled>Save New Password</button>
+      </div>
+      <p class="help">If you have any questions, please <a href="mailto:support@morphic.org">contact us</a></p>
+    </div>
+    <div class="step" id="doneStep" style="display: none">
+      <p>All done! You can now return to Moprhic to login with your new password.</p>
+    </div>
+  </main>
+  <footer>
+  </footer>
+  <script type="text/javascript" src="../settings.js"></script>
+  <script type="text/javascript" src="../service.js"></script>
+  <script type="text/javascript">
+    (function(window){
+      'use strict';
+
+      var service = new MorphicService(MorphicSettings.serviceURL);
+
+      var pageController = {
+        initialize: function(){
+          window.addEventListener('hashchange', this);
+          this.showStepBasedOnPageParameters();
+        },
+
+        showStepBasedOnPageParameters: function(){
+          var query = new URLSearchParams(window.location.hash.substr(1));
+          var token = query.get("token");
+          if (token !== null){
+            passwordController.token = token;
+            this.show(passwordController);
+          }else{
+            this.show(requestController);
+          }
+        },
+
+        show: function(controller){
+          if (this.showingController !== null){
+            this.showingController.hide();
+          }
+          this.showingController = controller;
+          this.showingController.show();
+        },
+
+        showingController: null,
+
+        handleEvent: function(e){
+          this[e.type](e);
+        },
+
+        hashchange: function(e){
+          this.showStepBasedOnPageParameters();
+        }
+      };
+
+      var requestController = {
+
+        initialize: function(){
+          this.requestButton.addEventListener('click', this);
+          this.emailField.addEventListener('input', this);
+        },
+
+        stepElement: window.document.getElementById("requestStep"),
+        emailField: window.document.getElementById("emailField"),
+        requestButton: window.document.getElementById("requestButton"),
+
+        show: function(){
+          this.stepElement.style.display = '';
+          this.emailField.focus();
+        },
+
+        hide: function(){
+          this.stepElement.style.display = 'none';
+        },
+
+        handleEvent: function(e){
+          this[e.type](e);
+        },
+
+        click: function(e){
+          if (e.currentTarget === this.requestButton){
+            this.requestReset();
+          }
+        },
+
+        input: function(e){
+          if (e.currentTarget === this.emailField){
+            this.requestButton.disabled = this.emailField.value.trim().length === 0 || !this.emailField.checkValidity();
+          }
+        },
+
+        requestReset: function(){
+          this.setFieldsEnabled(false);
+          var email = this.emailField.value.trim();
+          service.requestPasswordReset(email, this.handleRequestComplete, this);
+        },
+
+        handleRequestComplete: function(error, response){
+          if (error !== null){
+            this.setFieldsEnabled(true);
+            alert("Sorry, we were unable to request a password reset.  Please try again.");
+            return;
+          }
+          pageController.show(waitController);
+        },
+
+        setFieldsEnabled: function(enabled){
+          this.emailField.disabled = !enabled;
+          this.requestButton.disabled = !enabled;
+        }
+      };
+
+      var waitController = {
+
+        initialize: function(){
+          this.restartButton.addEventListener('click', this);
+        },
+
+        stepElement: window.document.getElementById("waitStep"),
+
+        show: function(){
+          this.stepElement.style.display = '';
+        },
+
+        hide: function(){
+          this.stepElement.style.display = 'none';
+        },
+
+        restartButton: window.document.getElementById("restartButton"),
+
+        handleEvent: function(e){
+          this[e.type](e);
+        },
+
+        click: function(e){
+          if (e.currentTarget === this.restartButton){
+            pageController.show(requestController);
+          }
+        },
+      };
+
+      var passwordController = {
+
+        initialize: function(){
+          this.setPasswordButton.addEventListener('click', this);
+          this.newPasswordField.addEventListener('input', this);
+          this.newPasswordField.addEventListener('blur', this);
+          this.confirmPasswordField.addEventListener('input', this);
+          this.confirmPasswordField.addEventListener('blur', this);
+        },
+
+        token: null,
+        stepElement: window.document.getElementById("passwordStep"),
+
+        show: function(){
+          this.stepElement.style.display = '';
+          this.newPasswordField.focus();
+        },
+
+        hide: function(){
+          this.stepElement.style.display = 'none';
+        },
+
+        newPasswordField: window.document.getElementById("newPasswordField"),
+        confirmPasswordField: window.document.getElementById("confirmPasswordField"),
+        setPasswordButton: window.document.getElementById("setPasswordButton"),
+
+        handleEvent: function(e){
+          this[e.type](e);
+        },
+
+        click: function(e){
+          if (e.currentTarget === this.setPasswordButton){
+            this.setPassword();
+          }
+        },
+
+        input: function(e){
+          if (e.currentTarget === this.newPasswordField || e.currentTarget === this.confirmPasswordField){
+            this.setPasswordButton.disabled = !this.newPasswordField.checkValidity() || this.newPasswordField.value != this.confirmPasswordField.value;
+          }
+        },
+
+        blur: function(e){
+          if (e.currentTarget === this.newPasswordField){
+            this.newPasswordField.reportValidity();
+          }else if (e.currentTarget === this.confirmPasswordField){
+            if (this.confirmPasswordField.value.length > 0 && this.newPasswordField.value != this.confirmPasswordField.value){
+              this.confirmPasswordField.setCustomValidity("Your passwords do not match");
+              this.confirmPasswordField.reportValidity();
+            }
+          }
+        },
+
+        setPassword: function(){
+          this.setFieldsEnabled(false);
+          var password = this.newPasswordField.value;
+          service.resetPassword(this.token, password, this.handleSetPasswordComplete, this);
+        },
+
+        handleSetPasswordComplete: function(error, response){
+          if (error !== null){
+            var message = "Sorry, we were unable set your password.  Please try again.";
+            if (error.response){
+              switch (error.response.error){
+                case "bad_password":
+                  message = "Your password is too easily guessed.  Please try a different password.";
+                  break;
+                case "short_password":
+                  message = "Your password is too short.  Please try a different password.";
+                  break;
+              }
+            }
+            alert(message);
+            this.setFieldsEnabled(true);
+            return;
+          }
+          pageController.show(doneController);
+        },
+
+        setFieldsEnabled: function(enabled){
+          this.newPasswordField.disabled = !enabled;
+          this.confirmPasswordField.disabled = !enabled;
+          this.setPasswordButton.disabled = !enabled;
+        }
+      };
+
+      var doneController = {
+
+        initialize: function(){
+        },
+
+        stepElement: window.document.getElementById("doneStep"),
+
+        show: function(){
+          this.stepElement.style.display = '';
+        },
+
+        hide: function(){
+          this.stepElement.style.display = 'none';
+        },
+
+      };
+
+      requestController.initialize();
+      waitController.initialize();
+      passwordController.initialize();
+      doneController.initialize();
+      pageController.initialize();
+    })(window);
+  </script>
+</body>
+</html>
