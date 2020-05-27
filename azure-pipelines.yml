@@ -93,7 +93,7 @@ stages:
                 git checkout ${BRANCH}
                 ls -al
                 echo "setting new image tag"
-                ./kustomize edit set image morphicworld/morphiclite=morphicworld/morphiclite:${NEWTAG}
+                ./kustomize edit set image morphicworld/morphicweb=morphicworld/morphicweb:${NEWTAG}
                 cat kustomization.yaml
                 git config --global user.email "buildmaster@raisingthefloor.org"
                 git config --global user.name "buildmaster"
