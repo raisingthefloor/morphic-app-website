@@ -7,14 +7,16 @@ Static web front end for
 
 # Developer Builds
 
-First, copy `settings/development.js` to `www/settings.js` and adjust as needed for your
-local setup.
-
-Next, run docker-compose:
+Run docker-compose:
 
 ````
 $ docker-compose up
 ````
+
+Create an `.env` file to provide local values for the the following environmental variables:
+
+- `SERVICE_URL` - The morphic api service
+- `RECAPTCHA_KEY` - The client key to use when including recaptcha
 
 # Password Reset URLs
 

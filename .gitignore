@@ -2,3 +2,4 @@
 node_modules/*
 settings/local.js
 www/settings.js
+.env
