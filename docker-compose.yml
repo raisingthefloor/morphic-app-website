@@ -4,7 +4,7 @@ services:
     build:
       context: .
     ports:
-      - "80:80"
+      - "5003:80"
     environment:
       SERVICE_URL:    "http://localhost:5002/"
       RECAPTCHA_KEY:  "6Le6hfsUAAAAAB9-WagMKxjnZmP7RKrSxlTYjJc-"
