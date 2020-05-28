@@ -2,6 +2,7 @@
 
 Static web front end for
 
+- Email Verification
 - Password Reset
 - (more features TBD)
 

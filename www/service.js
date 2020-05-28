@@ -12,8 +12,8 @@ MorphicService.prototype = {
 
     baseURL: null,
 
-    requestPasswordReset: function(email, completion, target){
-        return this._sendRequest("v1/auth/username/password_reset/request", "POST", {email: email}, completion, target);
+    requestPasswordReset: function(email, recaptchaToken, completion, target){
+        return this._sendRequest("v1/auth/username/password_reset/request", "POST", {email: email, g_recaptcha_response: recaptchaToken}, completion, target);
     },
 
     resetPassword: function(token, newPassword, completion, target){

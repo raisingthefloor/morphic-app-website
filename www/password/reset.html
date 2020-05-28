@@ -55,6 +55,12 @@
   <script type="text/javascript" src="../settings.js"></script>
   <script type="text/javascript" src="../service.js"></script>
   <script type="text/javascript">
+    var script = document.createElement('script');
+    script.type = "text/javascript";
+    script.src = "https://www.google.com/recaptcha/api.js?render=" + MorphicSettings.recaptchaKey;
+    document.body.appendChild(script);
+  </script>
+  <script type="text/javascript">
     (function(window){
       'use strict';
 
@@ -135,7 +141,11 @@
         requestReset: function(){
           this.setFieldsEnabled(false);
           var email = this.emailField.value.trim();
-          service.requestPasswordReset(email, this.handleRequestComplete, this);
+          grecaptcha.ready(function(){
+            grecaptcha.execute(MorphicSettings.recaptchaKey, {action: 'requestpasswordreset'}).then(function(token) {
+              service.requestPasswordReset(email, token, requestController.handleRequestComplete, requestController);
+            });
+          });
         },
 
         handleRequestComplete: function(error, response){
