@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>Verify Your Email | Morphic</title>
+  <link rel="shortcut icon" href="../style/favicon.ico" type="image/vnd.microsoft.icon">
+  <link rel="stylesheet" type="text/css" href="../style/default.css">
+  <link rel="stylesheet" type="text/css" href="verify.css">
+</head>
+<body>
+  <header>
+    <img class="logo" src="../logo.svg" alt="An animated Mophic logo (gear-shaped icon that has a chameleon in the center) changes colors and then winks.">
+  </header>
+  <main>
+    <header>
+      <h1 id="headerLabel">Verifying...</h1>
+    </header>
+    <p id="statusLabel" style="display: none">-</p>
+  </main>
+  <footer>
+  </footer>
+  <script type="text/javascript" src="../settings.js"></script>
+  <script type="text/javascript" src="../service.js"></script>
+  <script type="text/javascript">
+    (function(window){
+      'use strict';
+
+      var service = new MorphicService(MorphicSettings.serviceURL);
+
+      var pageController = {
+        initialize: function(){
+          var query = new URLSearchParams(window.location.hash.substr(1));
+          var userId = query.get("user_id");
+          var token = query.get("token");
+          if (userId && token){
+            service.verifyEmail(userId, token, this.handleVerifyComplete, this);
+          }else{
+            this.updateStatus("Verification Failed", "The link you clicked on did not contain the correct information.");
+          }
+        },
+
+        handleVerifyComplete: function(error, data){
+          if (data && data.message == "email_verified"){
+            this.updateStatus("Email Verified", "You're all set!  Your email has been verified.  You may close this window.");
+          }else{
+            this.updateStatus("Verification Failed", "Sorry, we could not verify your email at this time.  Please try again");
+          }
+        },
+
+        updateStatus: function(title, message){
+          this.statusLabel.style.display = '';
+          this.headerLabel.childNodes[0].nodeValue = title;
+          this.statusLabel.childNodes[0].nodeValue = message;
+        },
+
+        headerLabel: window.document.getElementById("headerLabel"),
+        statusLabel: window.document.getElementById("statusLabel")
+      };
+
+      pageController.initialize();
+    })(window);
+  </script>
+</body>
+</html>
