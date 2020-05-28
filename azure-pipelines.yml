@@ -30,6 +30,7 @@ variables:
       latest
       develop-$(Build.BuildNumber)
   ${{ if startsWith(variables['Build.SourceBranch'], 'refs/tags') }}:
+    newDeployTag:
     imageTags: |
       $(Build.SourceBranchName)
 
@@ -53,7 +54,13 @@ stages:
   - stage: docker
     jobs:
       - job: build_and_publish_image
+        condition: ne(variables['imageTags'], '')
         steps:
+          - task: Docker@2
+            displayName: Login to docker hub
+            inputs:
+              command: login
+              containerRegistry: morphicworld dockerhub
           - task: Docker@2
             displayName: build image
             inputs:
@@ -62,14 +69,7 @@ stages:
               Dockerfile: Dockerfile
               tags: $(imageTags)
           - task: Docker@2
-            displayName: Login to docker hub
-            condition: ne(variables['imageTags'], '')
-            inputs:
-              command: login
-              containerRegistry: morphicworld dockerhub
-          - task: Docker@2
             displayName: build and push image
-            condition: ne(variables['imageTags'], '')
             inputs:
               repository: morphicworld/morphicweb
               command: push
