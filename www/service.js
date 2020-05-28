@@ -20,6 +20,10 @@ MorphicService.prototype = {
         return this._sendRequest("v1/auth/username/password_reset/" + token, "POST", {new_password: newPassword}, completion, target);
     },
 
+    verifyEmail: function(userId, token, completion, target){
+        return this._sendRequest("v1/users/" + userId + "/verify_email/" + token, "GET", null, completion, target);
+    },
+
     _sendRequest: function(path, method, payload, completion, target){
         var request = new MorphicRequest(this.baseURL + path, method, payload);
         request.send(completion, target);

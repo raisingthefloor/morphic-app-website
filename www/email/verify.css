@@ -1,0 +1,19 @@
+body > main{
+    width: 500px;
+    margin: 0 auto;
+}
+
+body > main > header{
+    text-align: center;
+}
+
+body > main >  p{
+    text-align: center;
+}
+
+@media (max-width: 519px){
+    body > main{
+        width: auto;
+        margin: 0 10px;
+    }
+}

@@ -30,8 +30,16 @@ variables:
       latest
       develop-$(Build.BuildNumber)
   ${{ if startsWith(variables['Build.SourceBranch'], 'refs/tags') }}:
+    newDeployTag:
     imageTags: |
       $(Build.SourceBranchName)
+
+  # pipelines require that all repositories are accessible before you ever use them.
+  # Since we want to push tag changes from master to master (and develop to develop)
+  # but do NOT want to push tag changes on PR branches, we simply set the deploy repo
+  # branch to master. We won't use it anyway.
+  ${{ if eq(variables['deployRepoRef'], '') }}:
+    deployRepoRef: master
 
 resources:
   repositories:
@@ -46,7 +54,13 @@ stages:
   - stage: docker
     jobs:
       - job: build_and_publish_image
+        condition: ne(variables['imageTags'], '')
         steps:
+          - task: Docker@2
+            displayName: Login to docker hub
+            inputs:
+              command: login
+              containerRegistry: morphicworld dockerhub
           - task: Docker@2
             displayName: build image
             inputs:
@@ -55,14 +69,7 @@ stages:
               Dockerfile: Dockerfile
               tags: $(imageTags)
           - task: Docker@2
-            displayName: Login to docker hub
-            condition: ne(variables['imageTags'], '')
-            inputs:
-              command: login
-              containerRegistry: morphicworld dockerhub
-          - task: Docker@2
             displayName: build and push image
-            condition: ne(variables['imageTags'], '')
             inputs:
               repository: morphicworld/morphicweb
               command: push
