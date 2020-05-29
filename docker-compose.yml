@@ -7,7 +7,7 @@ services:
       - "5003:80"
     environment:
       SERVICE_URL:    "${SERVICE_URL:-http://localhost:5002/}"
-      RECAPTCHA_KEY:  "${RECAPTCHA_KEY:-6Le6hfsUAAAAAB9-WagMKxjnZmP7RKrSxlTYjJc-}"
+      RECAPTCHA_KEY:  "${RECAPTCHA_KEY:-6Lc1hfsUAAAAAGFReCJUUva4LHF30XG5pIoJr2Nl}"
     volumes:
     - type: bind
       source: ./www
