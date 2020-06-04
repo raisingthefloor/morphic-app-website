@@ -1,6 +1,6 @@
 FROM ubuntu:18.04
 
-RUN apt-get update && apt-get install -y nginx
+RUN apt-get update && apt-get install -y nginx && apt-get install -y gettext-base
 
 ENV WWWDIR=/MorphicLiteWeb/www
 COPY www ${WWWDIR}
