@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>Downloads | Morphic</title>
+  <link rel="shortcut icon" href="../style/favicon.ico" type="image/vnd.microsoft.icon">
+  <link rel="stylesheet" type="text/css" href="style/default.css">
+  <link rel="stylesheet" type="text/css" href="download.css">
+</head>
+<body>
+  <header>
+    <img class="logo" src="../logo.svg" alt="An animated Mophic logo (gear-shaped icon that has a chameleon in the center) changes colors and then winks.">
+  </header>
+  <main>
+    <header>
+      <h1>Get Morphic</h1>
+    </header>
+    <section class="download" id="windows" style="display: none">
+      <a id="windowsLink" class="button primary">Download Morphic for Windows</a>
+    </section>
+    <section class="download" id="mac" style="display: none">
+      <a id="macLink" class="button primary">Download Morphic for Mac</a>
+    </section>
+  </main>
+  <footer>
+  </footer>
+  <script type="text/javascript" src="settings.js"></script>
+  <script type="text/javascript">
+    (function(window){
+      'use strict';
+
+      var pageController = {
+        initialize: function(){
+          windowsLink.href = MorphicSettings.windowsDownloadURL;
+          macLink.href = MorphicSettings.macDownloadURL;
+          var isMac = window.navigator.userAgent.indexOf('Macintosh') >= 0;
+          if (isMac){
+            this.macSection.style.display = '';
+          }else{
+            this.windowsSection.style.display = '';
+          }
+        },
+
+        macSection: window.document.getElementById("mac"),
+        windowsSection: window.document.getElementById("windows"),
+        macLink: window.document.getElementById("macLink"),
+        windowsLink: window.document.getElementById("windowsLink")
+      };
+
+      pageController.initialize();
+    })(window);
+  </script>
+</body>
+</html>
