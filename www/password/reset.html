@@ -10,44 +10,59 @@
 </head>
 <body>
   <header>
-    <img class="logo" src="../logo.svg" alt="An animated Mophic logo (gear-shaped icon that has a chameleon in the center) changes colors and then winks.">
+    <div class="container">
+      <div class="logo">
+        <a href="https://morphic.org/">
+          <img src="../logo.svg" alt="The Morphic logo">
+        </a>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="https://morphic.org/">Home</a></li>
+          <li><a href="https://morphic.org/about/">About</a></li>
+          <li><a href="https://morphic.org/morphic-personal/">Morphic Personal</a></li>
+        </ul>
+      </nav>
+    </div>
   </header>
   <main>
-    <header>
-      <h1>Reset Your Password</h1>
-    </header>
-    <div class="step" id="requestStep" style="display: none">
-      <p>To reset your password, please enter the email address you used when signing up for Morphic</p>
-      <div class="form">
-        <label>
-          <span>Your Email Address</span>
-          <input type="email" id="emailField" placeholder="e.g., yourname@gmail.com">
-        </label>
-        <button id="requestButton" disabled>Request Password Reset</button>
+    <div class="container">
+      <header>
+        <h1>Reset Your Password</h1>
+      </header>
+      <div class="step" id="requestStep" style="display: none">
+        <p>To reset your password, please enter the email address you used when signing up for Morphic</p>
+        <div class="form">
+          <label>
+            <span>Your Email Address</span>
+            <input type="email" id="emailField" placeholder="e.g., yourname@gmail.com">
+          </label>
+          <button class="action" id="requestButton" disabled>Request Password Reset</button>
+        </div>
+        <p class="help">If you have any questions, please <a href="mailto:support@morphic.org">contact us</a></p>
       </div>
-      <p class="help">If you have any questions, please <a href="mailto:support@morphic.org">contact us</a></p>
-    </div>
-    <div class="step" id="waitStep" style="display: none">
-      <p>Thanks! Check your email for a link from Morphic.</p>
-      <p class="help">If you don't receive an email, <button id="restartButton">try again</button></p>
-    </div>
-    <div class="step" id="passwordStep" style="display: none">
-      <p>Choose a new password</p>
-      <div class="form">
-        <label>
-          <span>New Password</span>
-          <input type="password" id="newPasswordField" placeholder=" " minlength="6">
-        </label>
-        <label>
-          <span>Confirm Password</span>
-          <input type="password" id="confirmPasswordField" placeholder=" ">
-        </label>
-        <button id="setPasswordButton" disabled>Save New Password</button>
+      <div class="step" id="waitStep" style="display: none">
+        <p>Thanks! Check your email for a link from Morphic.</p>
+        <p class="help">If you don't receive an email, <button id="restartButton">try again</button></p>
       </div>
-      <p class="help">If you have any questions, please <a href="mailto:support@morphic.org">contact us</a></p>
-    </div>
-    <div class="step" id="doneStep" style="display: none">
-      <p>All done! You can now return to Moprhic to login with your new password.</p>
+      <div class="step" id="passwordStep" style="display: none">
+        <p>Choose a new password</p>
+        <div class="form">
+          <label>
+            <span>New Password</span>
+            <input type="password" id="newPasswordField" placeholder=" " minlength="6">
+          </label>
+          <label>
+            <span>Confirm Password</span>
+            <input type="password" id="confirmPasswordField" placeholder=" ">
+          </label>
+          <button class="action" id="setPasswordButton" disabled>Save New Password</button>
+        </div>
+        <p class="help">If you have any questions, please <a href="mailto:support@morphic.org">contact us</a></p>
+      </div>
+      <div class="step" id="doneStep" style="display: none">
+        <p>All done! You can now return to Moprhic to login with your new password.</p>
+      </div>
     </div>
   </main>
   <footer>
@@ -187,6 +202,7 @@
 
         click: function(e){
           if (e.currentTarget === this.restartButton){
+            requestController.setFieldsEnabled(true);
             pageController.show(requestController);
           }
         },

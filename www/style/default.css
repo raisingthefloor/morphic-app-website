@@ -1,4 +1,10 @@
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap');
+/* ------------------- */
+/* Fonts */
+
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700;800&display=swap');
+
+/* ------------------- */
+/* Page */
 
 html{
     padding: 0;
@@ -10,27 +16,151 @@ body{
     padding: 0;
     font-family: "Open Sans", sans-serif;
     font-weight: 400;
+    font-size: 24px;
+    color: rgb(0,41,87);
 }
+
+/* ------------------- */
+/* Header */
 
 body > header{
-    height: 134px;
+    height: 48px;
+    padding: 64px;
+    border-bottom: 1px solid rgb(229,229,229);
 }
 
-body > header > img.logo{
-    height: 68px;
-    margin: 33px;
+body > header > div.container{
+    max-width: 1104px;
+    margin: 0 auto;
+    display: flex;
 }
 
-body > footer{
-
+body > header > div.container > div.logo > a > img{
+    height: 48px;
+    border: none;
 }
+
+body > header > div.container > nav{
+    height: 48px;
+    flex: 1;
+    text-align: right;
+}
+
+body > header > div.container > nav > ul{
+    display: inline-block;
+    text-align: left;
+    line-height: 48px;
+    font-family: "Open Sans", sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+body > header > div.container > nav > ul > li{
+    display: inline-block;
+    margin: 0;
+    padding: 0 11px;
+}
+
+body > header > div.container > nav > ul > li > a{
+}
+
+@media (max-width: 650px){
+    body > header{
+        padding: 24px;
+    }
+
+    body > header > div.container > nav{
+        display: none;
+    }
+}
+
+/* ------------------- */
+/* Main Content */
+
+body > main{
+    padding: 64px;
+}
+
+body > main > div.container{
+    max-width: 1104px;
+    margin: 0 auto;
+}
+
+body > main > div.container > header{
+    font-weight: 800;
+    color: rgb(0,41,87);
+    font-size: 25px;
+    line-height: 0.9;
+}
+
+h1,h2,h3,h4,h5,h6{
+    font-weight: inherit;
+}
+
+@media (max-width: 650px){
+    body > main{
+        padding: 24px;
+    }
+}
+
+/* ------------------- */
+/* Links */
 
 a{
-    color: rgb(0,129,69);
+    color: rgb(0,41,87);
     text-decoration: none;
 }
 
 a:hover{
-    color: rgb(0,11,27);
+    color: rgb(0,41,87);
     text-decoration: underline;
+}
+
+/* ------------------- */
+/* Buttons */
+
+button.action,
+a.button.action{
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border: none;
+    display: inline-block;
+    line-height: 48px;
+    border-radius: 24px;
+    color: white;
+    background: linear-gradient(90deg, rgba(0, 165, 81, 1) 0%, rgba(6, 166, 80, 1) 14.04%, rgba(21, 170, 78, 1) 31.99%, rgba(48, 176, 75, 1) 52.07%, rgba(84, 184, 70, 1) 73.71%, rgba(131, 195, 64, 1) 96.36%, rgba(139, 197, 63, 1) 100%);
+    cursor: default;
+    font-family: "Open Sans", sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    padding: 0 40px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+button.action:not(:disabled),
+a.button.action:not(:disabled){
+    cursor: pointer;
+}
+
+button.action:disabled,
+a.button.action:disabled{
+    opacity: 0.5;
+}
+
+button.action:not(:disabled):hover,
+a.button.action:not(:disabled):hover{
+    text-decoration: none;
+    background: rgb(0, 165, 81);
+}
+
+/* ------------------- */
+/* Footer */
+
+body > footer{
+
 }
