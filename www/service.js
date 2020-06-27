@@ -21,7 +21,7 @@ MorphicService.prototype = {
     },
 
     verifyEmail: function(userId, token, completion, target){
-        return this._sendRequest("v1/users/" + userId + "/verify_email/" + token, "GET", null, completion, target);
+        return this._sendRequest("v1/users/" + userId + "/verify_email/" + token, "POST", null, completion, target);
     },
 
     _sendRequest: function(path, method, payload, completion, target){
