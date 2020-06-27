@@ -1,13 +1,15 @@
 version: "3.7"
 services:
   morphicweb:
+    hostname: morphicweb
     build:
       context: .
     ports:
       - "5003:80"
+      - "9145:9145"
     environment:
       SERVICE_URL: "${SERVICE_URL:-http://localhost:5002/}"
-      RECAPTCHA_KEY: "${RECAPTCHA_KEY:-6Lc1hfsUAAAAAGFReCJUUva4LHF30XG5pIoJr2Nl}"
+      RECAPTCHA_KEY: "6Le6hfsUAAAAAB9-WagMKxjnZmP7RKrSxlTYjJc-"
       MORPHIC_WINDOWS_DOWNLOAD_URL: "${MORPHIC_WINDOWS_DOWNLOAD_URL}"
       MORPHIC_WINDOWS_APPCAST_URL: "${MORPHIC_WINDOWS_APPCAST_URL}"
       MORPHIC_MAC_DOWNLOAD_URL: "${MORPHIC_MAC_DOWNLOAD_URL}"
@@ -15,4 +17,3 @@ services:
     - type: bind
       source: ./www
       target: /MorphicLiteWeb/www
-
