@@ -23,6 +23,7 @@ RUN chmod a+rx entrypoint.sh
 RUN mkdir -p /MorphicLiteWeb/logs && ln -sf /dev/stdout /MorphicLiteWeb/logs/access.log && ln -sf /dev/stderr /MorphicLiteWeb/logs/error.log
 
 EXPOSE 80
-EXPOSE 9145
+# alive/health/metrics
+EXPOSE 9180
 
 CMD ["/entrypoint.sh"]
