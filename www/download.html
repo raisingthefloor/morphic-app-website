@@ -56,8 +56,8 @@
 
       var pageController = {
         initialize: function(){
-          windowsLink.href = MorphicSettings.windowsDownloadURL;
-          macLink.href = MorphicSettings.macDownloadURL;
+          this.windowsLink.href = MorphicSettings.windowsDownloadURL;
+          this.macLink.href = MorphicSettings.macDownloadURL;
           var isMac = window.navigator.userAgent.indexOf('Macintosh') >= 0;
           if (isMac){
             this.macSection.style.display = '';

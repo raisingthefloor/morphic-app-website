@@ -5,7 +5,9 @@ window.MorphicSettings = {
     serviceURL: "${SERVICE_URL-http://localhost:5002/}",
     recaptchaKey: "${RECAPTCHA_KEY}",
     windowsDownloadURL: "${MORPHIC_WINDOWS_DOWNLOAD_URL}",
-    macDownloadURL: "${MORPHIC_MAC_DOWNLOAD_URL}"
+    macDownloadURL: "${MORPHIC_MAC_DOWNLOAD_URL}",
+    windowsCommunityDownloadURL: "${MORPHIC_WINDOWS_COMMUNITY_DOWNLOAD_URL}",
+    macCommunityDownloadURL: "${MORPHIC_MAC_COMMUNITY_DOWNLOAD_URL}"
 };
 EOL
 

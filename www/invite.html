@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>Community Invitation | Morphic</title>
+  <link rel="shortcut icon" href="../style/favicon.ico" type="image/vnd.microsoft.icon">
+  <link rel="stylesheet" type="text/css" href="style/default.css">
+  <link rel="stylesheet" type="text/css" href="invite.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <div class="logo">
+        <a href="https://morphic.org/">
+          <img src="logo.svg" alt="The Morphic logo">
+        </a>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="https://morphic.org/">Home</a></li>
+          <li><a href="https://morphic.org/about/">About</a></li>
+          <li><a href="https://morphic.org/morphic-personal/">Morphic Personal</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+  <main>
+    <div class="container">
+      <header>
+        <h1 id="header">&nbsp;</h1>
+      </header>
+      <section class="form" id="registrationForm" style="display: none">
+        <p>Hi <span id="name">&nbsp;</span>!  You'll need to create an account before you can download Morphic.</p>
+        <div class="form">
+          <label>
+            <span>Your Email Address</span>
+            <input type="email" id="emailField" placeholder="e.g., yourname@gmail.com">
+          </label>
+          <label>
+            <span>Choose a Password</span>
+            <input type="password" id="passwordField">
+          </label>
+          <label>
+            <span>Confirm Password</span>
+            <input type="password" id="confirmPasswordField">
+          </label>
+          <button class="action" id="registerButton" disabled>Create My Account</button>
+        </div>
+        <p class="help">If you have any questions, please <a href="mailto:support@morphic.org">contact us</a></p>
+        <p class="help"><button id="showLoginButton">Already have an account?</button></p>
+      </section>
+      <section class="form" id="loginForm" style="display: none">
+        <p>Login with your existing account to accept this invitation and download Morphic.</p>
+        <div class="form">
+          <label>
+            <span>Email Address</span>
+            <input type="email" id="loginEmailField" placeholder="e.g., yourname@gmail.com">
+          </label>
+          <label>
+            <span>Password</span>
+            <input type="password" id="loginPasswordField">
+          </label>
+          <button class="action" id="loginButton" disabled>Sign in</button>
+        </div>
+        <p class="help">If you have any questions, please <a href="mailto:support@morphic.org">contact us</a></p>
+        <p class="help"><button id="showRegistrationButton">Need to create an account?</button></p>
+      </section>
+      <section class="download" id="downloadSection" style="display: none">
+        <p>You're all set!  Use the button below to download Morphic to your computer.</p>
+        <p>When you open Morphic for the first time, login with the email and password you just used.</p>
+        <p class="action">
+          <a id="macLink" class="button action" style="display: none">Morphic Community for Mac Installer</a>
+          <a id="windowsLink" class="button action" style="display: none">Morphic Community for Windows Installer</a>
+        </p>
+      </section>
+    </div>
+  </main>
+  <footer>
+    <div class="container">
+    </div>
+  </footer>
+  <script type="text/javascript" src="settings.js"></script>
+  <script type="text/javascript" src="service.js"></script>
+  <script type="text/javascript">
+    (function(window){
+      'use strict';
+
+      var service = new MorphicService(MorphicSettings.serviceURL);
+
+      var pageController = {
+
+        invitationId: null,
+        invitation: null,
+
+        initialize: function(){
+
+          this.windowsLink.href = MorphicSettings.windowsCommunityDownloadURL;
+          this.macLink.href = MorphicSettings.macCommunityDownloadURL;
+
+          var query = new URLSearchParams(window.location.hash.substr(1));
+          this.invitationId = query.get("i");
+
+          service.loadCommunityInvitation(this.invitationId, this.handleInvitationLoad, this);
+
+          this.registerButton.addEventListener("click", this);
+          this.showLoginButton.addEventListener("click", this);
+          this.loginButton.addEventListener("click", this);
+          this.showRegistrationButton.addEventListener("click", this);
+          this.emailField.addEventListener("input", this);
+          this.passwordField.addEventListener("input", this);
+          this.confirmPasswordField.addEventListener("input", this);
+          this.loginEmailField.addEventListener("input", this);
+          this.loginPasswordField.addEventListener("input", this);
+        },
+
+        handleEvent: function(e){
+          this[e.type](e);
+        },
+
+        click: function(e){
+          if (e.currentTarget === this.registerButton){
+            this.register();
+          }else if (e.currentTarget === this.loginButton){
+            this.login();
+          }else if (e.currentTarget === this.showLoginButton){
+            this.showLogin();
+          }else if (e.currentTarget === this.showRegistrationButton){
+            this.showRegistration();
+          }
+        },
+
+        input: function(e){
+          if (e.currentTarget === this.emailField || e.currentTarget === this.passwordField || e.currentTarget === this.confirmPasswordField){
+            this.updateRegisterButtonEnabled();
+          }else if (e.currentTarget === this.loginEmailField || e.currentTarget == this.loginPasswordField){
+            this.updateLoginButtonEnabled();
+          }
+        },
+
+        handleInvitationLoad: function(error, invitation){
+          if (error !== null){
+            if (error.status == 404){
+              this.header.firstChild.nodeValue = "Sorry! The link you clicked does not appear to be valid";
+            }else{
+              this.header.firstChild.nodeValue = "Sorry! We were unable to process your request.  Please try again.";
+            }
+            return;
+          }
+          this.invitation = invitation;
+          this.header.firstChild.nodeValue = "Join the " + invitation.community.name + " Morphic Community";
+          this.emailField.value = invitation.email;
+          this.nameLabel.firstChild.nodeValue = invitation.first_name || invitation.last_name || "";
+          this.showRegistration();
+        },
+
+        showRegistration: function(){
+          this.loginForm.style.display = 'none';
+          this.registrationForm.style.display = '';
+          this.passwordField.focus();
+        },
+
+        showLogin: function(){
+          this.loginEmailField.value = this.emailField.value;
+          this.loginForm.style.display = '';
+          this.registrationForm.style.display = 'none';
+          this.loginPasswordField.focus();
+        },
+
+        updateRegisterButtonEnabled: function(){
+          this.registerButton.disabled = !this.emailField.checkValidity() || !this.passwordField.checkValidity();
+        },
+
+        register: function(){
+          if (this.passwordField.value != this.confirmPasswordField.value){
+            alert("Your passwords do not match");
+            return;
+          }
+          this.registerButton.disabled = true;
+          this.emailField.disabled = true;
+          this.passwordField.disabled = true;
+          this.confirmPasswordField.disabled = true;
+          service.register(this.emailField.value, this.passwordField.value, this.handleRegistration, this);
+        },
+
+        handleRegistration: function(error, auth){
+          if (error !== null){
+            this.registerButton.disabled = false;
+            this.emailField.disabled = false;
+            this.passwordField.disabled = false;
+            this.confirmPasswordField.disabled = false;
+            if (error.status == 400){
+              switch (error.response.error){
+                case "existing_username":
+                case "existing_email":
+                  alert("It looks like that email is already in use.  Please use the 'Already have an account?' link.");
+                  return;
+                case "malformed_email":
+                  alert("Please use a valid email address");
+                  return;
+                case "bad_password":
+                  alert("Your password is too easily guessed.  Please use another.");
+                  return;
+                case "short_password":
+                  alert("Your password must be at least " + error.response.details.minimum_length + " characters");
+                  return;
+              }
+            }
+            alert("Sorry, we could not create your account.  Please try again.");
+            return;
+          }
+          service.authToken = auth.token;
+          this.acceptInvitation();
+        },
+
+        updateLoginButtonEnabled: function(){
+          this.loginButton.disabled = this.loginEmailField.value.length === 0 || this.loginPasswordField.value.length === 0;
+        },
+
+        login: function(){
+          this.loginEmailField.disabled = true;
+          this.loginPasswordField.disabled = true;
+          this.loginButton.disabled = true;
+          service.login(this.loginEmailField.value, this.loginPasswordField.value, this.handleLogin, this);
+        },
+
+        handleLogin: function(error, auth){
+          if (error !== null){
+            this.loginEmailField.disabled = false;
+            this.loginPasswordField.disabled = false;
+            this.loginButton.disabled = false;
+            if (error.status == 400){
+              alert("We did not recogize the login you provided.  Please try again.");
+            }else{
+              alert("Sorry, we could not complete your login.  Please try again.");
+            }
+            return;
+          }
+          service.authToken = auth.token;
+          this.acceptInvitation();
+        },
+
+        acceptInvitation: function(){
+          service.acceptCommunityInvitation(this.invitation.community.id, this.invitationId, this.handleAcceptance, this);
+        },
+
+        handleAcceptance: function(error){
+          if (error !== null){
+            alert("Sorry, we could not accept the invitation.  Please try again");
+            // FIXME: how to try again?
+            return;
+          }
+          this.showDownload();
+        },
+
+        showDownload: function(){
+          this.registrationForm.style.display = 'none';
+          this.loginForm.style.display = 'none';
+          var isMac = window.navigator.userAgent.indexOf('Macintosh') >= 0;
+          if (isMac){
+            this.macLink.style.display = '';
+          }else{
+            this.windowsLink.style.display = '';
+          }
+          this.downloadSection.style.display = '';
+        },
+
+        header: window.document.getElementById("header"),
+        registrationForm: window.document.getElementById("registrationForm"),
+        nameLabel: window.document.getElementById("name"),
+        emailField: window.document.getElementById("emailField"),
+        passwordField: window.document.getElementById("passwordField"),
+        confirmPasswordField: window.document.getElementById("confirmPasswordField"),
+        registerButton: window.document.getElementById("registerButton"),
+        showLoginButton: window.document.getElementById("showLoginButton"),
+        loginForm: window.document.getElementById("loginForm"),
+        loginEmailField: window.document.getElementById("loginEmailField"),
+        loginPasswordField: window.document.getElementById("loginPasswordField"),
+        loginButton: window.document.getElementById("loginButton"),
+        showRegistrationButton: window.document.getElementById("showRegistrationButton"),
+        downloadSection: window.document.getElementById("downloadSection"),
+        macLink: window.document.getElementById("macLink"),
+        windowsLink: window.document.getElementById("windowsLink")
+      };
+
+      pageController.initialize();
+
+      window._controller = pageController;
+    })(window);
+  </script>
+</body>
+</html>

@@ -11,6 +11,15 @@ function MorphicService(baseURL){
 MorphicService.prototype = {
 
     baseURL: null,
+    authToken: null,
+
+    register: function(email, password, completion, target){
+        return this._sendRequest("v1/register/username", "POST", {username: email, email: email, password: password}, completion, target);
+    },
+
+    login: function(email, password, completion, target){
+        return this._sendRequest("v1/auth/username", "POST", {username: email, password: password}, completion, target);
+    },
 
     requestPasswordReset: function(email, recaptchaToken, completion, target){
         return this._sendRequest("v1/auth/username/password_reset/request", "POST", {email: email, g_recaptcha_response: recaptchaToken}, completion, target);
@@ -24,8 +33,17 @@ MorphicService.prototype = {
         return this._sendRequest("v1/users/" + userId + "/verify_email/" + token, "POST", null, completion, target);
     },
 
+    loadCommunityInvitation: function(invitationId, completion, target){
+        return this._sendRequest("v1/invitations/" + invitationId, "GET", null, completion, target);
+    },
+
+    acceptCommunityInvitation: function(communityId, invitationId, completion, target){
+        this._sendRequest("v1/communities/" + communityId + "/invitations/" + invitationId + "/accept", "POST", null, completion, target);
+    },
+
     _sendRequest: function(path, method, payload, completion, target){
         var request = new MorphicRequest(this.baseURL + path, method, payload);
+        request.authToken = this.authToken;
         request.send(completion, target);
         return request;
     }
@@ -45,6 +63,7 @@ MorphicRequest.prototype = {
     url: null,
     method: null,
     payload: null,
+    authToken: null,
     _httpRequest: null,
 
     send: function(completion, target){
@@ -59,6 +78,9 @@ MorphicRequest.prototype = {
             }
         });
         this._httpRequest.open(this.method, this.url, true);
+        if (this.authToken !== null){
+            this._httpRequest.setRequestHeader("Authorization", "Bearer " + this.authToken);
+        }
         var json = null;
         if (this.payload != null){
             json = JSON.stringify(this.payload);
