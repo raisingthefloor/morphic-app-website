@@ -1,0 +1,100 @@
+section.form > p.help{
+    font-size: 80%;
+    color: rgb(102,102,102);
+}
+
+section.form > p.help > a{
+    font-weight: 700;
+}
+
+section.form > p.help > button{
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background: transparent;
+    border: none;
+    font: inherit;
+    color: rgb(0,41,87);
+    text-decoration: none;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    font-weight: 700;
+}
+
+section.form > p.help > button:hover{
+    color: rgb(0,41,87);
+    text-decoration: underline;
+}
+
+div.form{
+    background-color: rgb(240,240,240);
+    border-radius: 6px;
+    padding: 30px;
+    max-width: 768px;
+}
+
+div.form label{
+    white-space: nowrap;
+    display: flex;
+    align-items: baseline;
+    margin: 0px 0 10px 0;
+}
+
+div.form label > span{
+    flex: none;
+    margin-right: 10px;
+    min-width: 250px;
+}
+
+div.form button.action{
+    display: block;
+    margin: 24px 0 0 260px;
+}
+
+div.form label > input[type="text"],
+div.form label > input[type="email"],
+div.form label > input[type="password"]{
+    flex: 1;
+}
+
+div.form input[type="text"],
+div.form input[type="email"],
+div.form input[type="password"]{
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-color: rgb(246,246,249);
+    border: 1px solid rgb(153,153,153);
+    font: inherit;
+    padding: 6px 12px;
+    margin: 0;
+}
+
+@media (max-width: 650px){
+
+    div.form label{
+        display: block;
+        text-align: center;
+    }
+
+    div.form label > span{
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    div.form label > input[type="text"],
+    div.form label > input[type="email"],
+    div.form label > input[type="password"]{
+        box-sizing: border-box;
+        width: 100%;
+    }
+
+    div.form button.action{
+        display: block;
+        margin: 24px auto 0 auto;
+    }
+}
+
+section.download > p.action{
+    text-align: center;
+    margin: 64px 0;
+}
