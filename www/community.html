@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>Community | Morphic</title>
+  <link rel="shortcut icon" href="../style/favicon.ico" type="image/vnd.microsoft.icon">
+  <link rel="stylesheet" type="text/css" href="style/default.css">
+  <link rel="stylesheet" type="text/css" href="community.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <div class="logo">
+        <a href="https://morphic.org/">
+          <img src="logo.svg" alt="The Morphic logo">
+        </a>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="https://morphic.org/">Home</a></li>
+          <li><a href="https://morphic.org/about/">About</a></li>
+          <li><a href="https://morphic.org/morphic-personal/">Morphic Personal</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+  <main>
+    <div class="container">
+      <header>
+        <h1>Morphic Community</h1>
+      </header>
+      <p>
+        Morphic Community allows you to setup a Morphic Bar for members of your family or community
+        so they can make the most of their computer without having to find the settings themselves.
+      </p>
+      <section class="register">
+        <p class="action">
+          <a id="registerLink" class="button action" target="blank">Create Your Community</a>
+        </p>
+      </section>
+    </div>
+  </main>
+  <footer>
+    <div class="container">
+    </div>
+  </footer>
+  <script type="text/javascript" src="settings.js"></script>
+  <script type="text/javascript">
+    (function(window){
+      'use strict';
+
+      var pageController = {
+        initialize: function(){
+          this.registerLink.href = MorphicSettings.communityRegistrationURL;
+        },
+
+        registerLink: window.document.getElementById("registerLink"),
+      };
+
+      pageController.initialize();
+    })(window);
+  </script>
+</body>
+</html>

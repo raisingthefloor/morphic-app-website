@@ -7,7 +7,8 @@ window.MorphicSettings = {
     windowsDownloadURL: "${MORPHIC_WINDOWS_DOWNLOAD_URL}",
     macDownloadURL: "${MORPHIC_MAC_DOWNLOAD_URL}",
     windowsCommunityDownloadURL: "${MORPHIC_WINDOWS_COMMUNITY_DOWNLOAD_URL}",
-    macCommunityDownloadURL: "${MORPHIC_MAC_COMMUNITY_DOWNLOAD_URL}"
+    macCommunityDownloadURL: "${MORPHIC_MAC_COMMUNITY_DOWNLOAD_URL}",
+    communityRegistrationURL: "${MORPHIC_COMMUNITY_REGISTRATION_URL}",
 };
 EOL
 
