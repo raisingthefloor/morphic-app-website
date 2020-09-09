@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>Downloads | Morphic</title>
+  <link rel="shortcut icon" href="../style/favicon.ico" type="image/vnd.microsoft.icon">
+  <link rel="stylesheet" type="text/css" href="style/default.css">
+  <link rel="stylesheet" type="text/css" href="download.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <div class="logo">
+        <a href="https://morphic.org/">
+          <img src="logo.svg" alt="The Morphic logo">
+        </a>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="https://morphic.org/">Home</a></li>
+          <li><a href="https://morphic.org/about/">About</a></li>
+          <li><a href="https://morphic.org/morphic-personal/">Morphic Personal</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+  <main>
+    <div class="container">
+      <header>
+        <h1>Download Morphic Community</h1>
+      </header>
+      <p>
+        Whether you need to make the screen easier to read or have text on the screen read to you, Morphic Community can help. This free software brings together a variety of features and settings in one central location, so you don’t have to dig for them.
+      </p>
+      <section class="download" id="windows" style="display: none">
+        <p class="action">
+          <a id="windowsLink" class="button action">Morphic Community for Windows Installer</a>
+        </p>
+      </section>
+      <section class="download" id="mac" style="display: none">
+        <p class="action">
+          <a id="macLink" class="button action">Morphic Community for Mac Installer</a>
+        </p>
+      </section>
+    </div>
+  </main>
+  <footer>
+    <div class="container">
+    </div>
+  </footer>
+  <script type="text/javascript" src="settings.js"></script>
+  <script type="text/javascript">
+    (function(window){
+      'use strict';
+
+      var pageController = {
+        initialize: function(){
+          this.windowsLink.href = MorphicSettings.windowsCommunityDownloadURL;
+          this.macLink.href = MorphicSettings.macCommunityDownloadURL;
+          var isMac = window.navigator.userAgent.indexOf('Macintosh') >= 0;
+          if (isMac){
+            this.macSection.style.display = '';
+          }else{
+            this.windowsSection.style.display = '';
+          }
+        },
+
+        macSection: window.document.getElementById("mac"),
+        windowsSection: window.document.getElementById("windows"),
+        macLink: window.document.getElementById("macLink"),
+        windowsLink: window.document.getElementById("windowsLink")
+      };
+
+      pageController.initialize();
+    })(window);
+  </script>
+</body>
+</html>
