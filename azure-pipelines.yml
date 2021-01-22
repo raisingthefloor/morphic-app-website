@@ -45,8 +45,8 @@ resources:
   repositories:
     - repository: deploy-morphicweb
       type: github
-      endpoint: oregondesignservices
-      name: oregondesignservices/deploy-morphicweb
+      endpoint: raisingthefloor
+      name: raisingthefloor/deploy-morphicweb
       ref: $(deployRepoRef)
 
 
