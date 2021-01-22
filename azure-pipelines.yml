@@ -61,14 +61,14 @@ stages:
             inputs:
               command: login
               containerRegistry: morphicworld dockerhub
-          - task: Docker@2
+          - task: Docker@2.173.0
             displayName: build image
             inputs:
               repository: morphicworld/morphicweb
               command: build
               Dockerfile: Dockerfile
               tags: $(imageTags)
-          - task: Docker@2
+          - task: Docker@2.173.0
             displayName: build and push image
             inputs:
               repository: morphicworld/morphicweb
