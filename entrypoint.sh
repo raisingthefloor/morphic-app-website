@@ -15,6 +15,6 @@ EOL
 cat $WWWDIR/settings.js
 envsubst '$MORPHIC_WINDOWS_APPCAST_URL' < /MorphicLiteWeb/config/nginx.conf > /MorphicLiteWeb/config/nginx.conf.subst
 envsubst '$MORPHIC_WINDOWS_COMMUNITY_APPCAST_URL' < /MorphicLiteWeb/config/nginx.conf.subst > /MorphicLiteWeb/config/nginx.conf
-# envsubst '$MORPHIC_MAC_APPCAST_URL' < /MorphicLiteWeb/config/nginx.conf > /MorphicLiteWeb/config/nginx.conf.subst
+envsubst '$MORPHIC_MAC_APPCAST_URL' < /MorphicLiteWeb/config/nginx.conf > /MorphicLiteWeb/config/nginx.conf
 
 nginx -p /MorphicLiteWeb -c config/nginx.conf -g "daemon off;"
