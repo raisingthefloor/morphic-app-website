@@ -21,8 +21,8 @@ variables:
     newDeployTag: stable-$(Build.BuildNumber)
     deployRepoRef: master
     imageTags: |
-      stable
       stable-$(Build.BuildNumber)
+      stable
   ${{ if eq(variables['Build.SourceBranchName'], 'develop') }}:
     newDeployTag: develop-$(Build.BuildNumber)
     deployRepoRef: develop
