@@ -103,6 +103,6 @@ stages:
                 ./kustomize edit set image morphicworld/morphicweb=morphicworld/morphicweb:${NEWTAG}
                 cat kustomization.yaml
                 git config --global user.email "buildmaster@raisingthefloor.org"
-                git config --global user.name "buildmaster"
+                git config --global user.name "deploybot-rtf"
                 git commit kustomization.yaml -m "buildmaster: updating tag to ${NEWTAG}"
                 git push
