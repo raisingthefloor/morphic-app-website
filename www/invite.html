@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover">
-  <title>Community Invitation | Morphic</title>
+  <title>Group Invitation | Morphic</title>
   <link rel="shortcut icon" href="../style/favicon.ico" type="image/vnd.microsoft.icon">
   <link rel="stylesheet" type="text/css" href="style/default.css">
   <link rel="stylesheet" type="text/css" href="invite.css">
@@ -20,7 +20,7 @@
         <ul>
           <li><a href="https://morphic.org/">Home</a></li>
           <li><a href="https://morphic.org/about/">About</a></li>
-          <li><a href="https://morphic.org/morphic-personal/">Morphic Personal</a></li>
+          <li><a href="https://morphic.org/morphic-basic/">Morphic Basic</a></li>
         </ul>
       </nav>
     </div>
@@ -70,8 +70,8 @@
         <p>You're all set!  Use the button below to download Morphic to your computer.</p>
         <p>When you open Morphic for the first time, login with the email and password you just used.</p>
         <p class="action">
-          <a id="macLink" class="button action" style="display: none">Morphic Community for Mac Installer</a>
-          <a id="windowsLink" class="button action" style="display: none">Morphic Community for Windows Installer</a>
+          <a id="macLink" class="button action" style="display: none">Morphic for Mac Installer</a>
+          <a id="windowsLink" class="button action" style="display: none">Morphic for Windows Installer</a>
         </p>
       </section>
     </div>
@@ -95,8 +95,8 @@
 
         initialize: function(){
 
-          this.windowsLink.href = MorphicSettings.windowsCommunityDownloadURL;
-          this.macLink.href = MorphicSettings.macCommunityDownloadURL;
+          this.windowsLink.href = MorphicSettings.windowsDownloadURL;
+          this.macLink.href = MorphicSettings.macDownloadURL;
 
           var query = new URLSearchParams(window.location.hash.substr(1));
           this.invitationId = query.get("i");
@@ -148,7 +148,7 @@
             return;
           }
           this.invitation = invitation;
-          this.header.firstChild.nodeValue = "Join the " + invitation.community.name + " Morphic Community";
+          this.header.firstChild.nodeValue = "Join the " + invitation.community.name + " Morphic Group";
           this.emailField.value = invitation.email;
           this.nameLabel.firstChild.nodeValue = invitation.first_name || invitation.last_name || "";
           this.showRegistration();
