@@ -20,7 +20,7 @@
         <ul>
           <li><a href="https://morphic.org/">Home</a></li>
           <li><a href="https://morphic.org/about/">About</a></li>
-          <li><a href="https://morphic.org/morphic-basic/">Morphic Basic</a></li>
+          <li><a href="https://morphic.org/morphic-basic/">Basic Features</a></li>
         </ul>
       </nav>
     </div>
@@ -148,7 +148,8 @@
             return;
           }
           this.invitation = invitation;
-          this.header.firstChild.nodeValue = "Join the " + invitation.community.name + " Morphic Group";
+          // this.header.firstChild.nodeValue = "Join the " + invitation.community.name + " Morphic Group";
+          this.header.firstChild.nodeValue = "Start using Morphic today";
           this.emailField.value = invitation.email;
           this.nameLabel.firstChild.nodeValue = invitation.first_name || invitation.last_name || "";
           this.showRegistration();
