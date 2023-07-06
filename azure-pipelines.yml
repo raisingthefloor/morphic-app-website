@@ -1,108 +1,63 @@
-# .NET Desktop
-# Build and run tests for .NET Desktop or Windows classic desktop solutions.
-# Add steps that publish symbols, save build artifacts, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/apps/windows/dot-net
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
 
 trigger:
-  branches:
-    include:
-      - master
-      - develop
-  tags:
-    include:
-      - "v*"
+- master
 
 pool:
-  vmImage: 'ubuntu-18.04'
+  vmImage: ubuntu-20.04
 
-variables:
-  imageName: 'morphicweb'
-  ${{ if eq(variables['Build.SourceBranchName'], 'master') }}:
-    newDeployTag: stable-$(Build.BuildNumber)
-    deployRepoRef: master
-    imageTags: |
-      stable
-      stable-$(Build.BuildNumber)
-  ${{ if eq(variables['Build.SourceBranchName'], 'develop') }}:
-    newDeployTag: develop-$(Build.BuildNumber)
-    deployRepoRef: develop
-    imageTags: |
-      latest
-      develop-$(Build.BuildNumber)
-  ${{ if startsWith(variables['Build.SourceBranch'], 'refs/tags') }}:
-    newDeployTag:
-    imageTags: |
-      $(Build.SourceBranchName)
+# steps:
+# - script: echo Hello, world!
+#   displayName: 'Run a one-line script'
+# 
+# - script: |
+#     echo Add other tasks to build, test, and deploy your project.
+#     echo See https://aka.ms/yaml
+#   displayName: 'Run a multi-line script'
 
-  # pipelines require that all repositories are accessible before you ever use them.
-  # Since we want to push tag changes from master to master (and develop to develop)
-  # but do NOT want to push tag changes on PR branches, we simply set the deploy repo
-  # branch to master. We won't use it anyway.
-  ${{ if eq(variables['deployRepoRef'], '') }}:
-    deployRepoRef: master
-
-resources:
-  repositories:
-    - repository: deploy-morphicweb
-      type: github
-      endpoint: raisingthefloor
-      name: raisingthefloor/deploy-morphicweb
-      ref: $(deployRepoRef)
-
+# TODO:
+# - detect the branch (master, develop or prod)
+# - create a tag prefix for the docker tag, based on the branch
+#   master -> [no prefix]
+#   prod -> [no prefix]
+#   develop -> dev-
+# - choose the container registry, based on the branch
+#   master -> acr-morphic
+#   prod -> dockerhub-raisingthefloor
+#   develop -> acr-morphicdev
+# - NOTE: we may want to create an "acr-morphicpr" container registry as well, and send any docker images there for PR check-ins (and then launch a temporary site off of a pr.morphic.org subdomain)
+# - finally: create a mechanism (during dev and production deployment) to delete any container images from the registry which are older than the image we are replacing (i.e. only keep the current one and the new one)
 
 stages:
-  - stage: docker
+  - stage: Docker
     jobs:
-      - job: build_and_publish_image
-        condition: ne(variables['imageTags'], '')
+      - job: Docker
         steps:
           - task: Docker@2
-            displayName: Login to docker hub
+            displayName: Build docker image
+            inputs:
+              command: build
+              containerRegistry: acr-morphic
+              repository: morphic-app-website
+              tags: $(Build.BuildNumber)
+          - task: Docker@2
+            displayName: Log in to container registry
             inputs:
               command: login
-              containerRegistry: morphicworld dockerhub
-          - task: Docker@2.173.0
-            displayName: build image
+              containerRegistry: acr-morphic
+          - task: Docker@2
+            displayName: Push docker image
             inputs:
-              repository: morphicworld/morphicweb
-              command: build
-              Dockerfile: Dockerfile
-              tags: $(imageTags)
-          - task: Docker@2.173.0
-            displayName: build and push image
-            inputs:
-              repository: morphicworld/morphicweb
               command: push
-              Dockerfile: Dockerfile
-              tags: $(imageTags)
-
-  - stage: update_deploy_tag
-    jobs:
-      - job: update_deploy_tag
-        condition: ne(variables['newDeployTag'], '')
-        steps:
-          - checkout: deploy-morphicweb
-            persistCredentials: true
-            path: deploy-morphicweb
-          - task: Bash@3
-            env:
-              NEWTAG: $(newDeployTag)
-              BRANCH: $(deployRepoRef)
+              containerRegistry: acr-morphic
+              repository: morphic-app-website
+              tags: $(Build.BuildNumber)
+          - task: Docker@2
+            displayName: Log out of container registry
             inputs:
-              targetType: 'inline'
-              workingDirectory: resources/
-              script: |
-                set -e
-                set -x
-                echo "installing kustomize"
-                wget "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh" -O install_kustomize.sh
-                bash install_kustomize.sh
-                git checkout ${BRANCH}
-                ls -al
-                echo "setting new image tag"
-                ./kustomize edit set image morphicworld/morphicweb=morphicworld/morphicweb:${NEWTAG}
-                cat kustomization.yaml
-                git config --global user.email "buildmaster@raisingthefloor.org"
-                git config --global user.name "buildmaster"
-                git commit kustomization.yaml -m "buildmaster: updating tag to ${NEWTAG}"
-                git push
+              command: logout
+              containerRegistry: acr-morphic
+
